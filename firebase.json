@@ -1,0 +1,18 @@
+{
+  "firestore": {
+    "database": "ai-studio-autopinpro-6597dde9-59f0-4a2e-90e5-55436f30fb2d",
+    "rules": "firestore.rules"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ]
+}

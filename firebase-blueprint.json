@@ -1,0 +1,404 @@
+{
+  "entities": {
+    "Manufacturer": {
+      "title": "Manufacturer",
+      "description": "Automotive manufacturer entity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "englishName": { "type": "string", "maxLength": 100 },
+        "country": { "type": "string", "maxLength": 60 },
+        "logoText": { "type": "string", "maxLength": 50 },
+        "category": { "type": "string", "enum": ["iranian", "chinese", "korean", "japanese", "european", "other"] },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "category", "status"]
+    },
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Automotive vehicle model",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "manufacturerId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 150 },
+        "persianName": { "type": "string", "maxLength": 150 },
+        "generation": { "type": "string", "maxLength": 100 },
+        "modelYears": { "type": "string", "maxLength": 50 },
+        "electricalSystem": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "source": { "type": "string", "maxLength": 200 },
+        "updatedBy": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "manufacturerId", "name", "status"]
+    },
+    "Engine": {
+      "title": "Engine",
+      "description": "Automotive engine specifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "code": { "type": "string", "maxLength": 50 },
+        "name": { "type": "string", "maxLength": 150 },
+        "fuelSystem": { "type": "string", "maxLength": 150 },
+        "valves": { "type": "number" },
+        "displacementCc": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "vehicleId", "code", "name", "status"]
+    },
+    "ECU": {
+      "title": "ECU",
+      "description": "Electronic Control Unit",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "engineId": { "type": "string" },
+        "brand": { "type": "string", "maxLength": 100 },
+        "model": { "type": "string", "maxLength": 100 },
+        "hardwareVersion": { "type": "string", "maxLength": 100 },
+        "softwareVersion": { "type": "string", "maxLength": 100 },
+        "connectorCount": { "type": "number" },
+        "description": { "type": "string", "maxLength": 2000 },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "vehicleId", "brand", "model", "status"]
+    },
+    "Connector": {
+      "title": "Connector",
+      "description": "Automotive electrical connector or socket",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "ecuId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 150 },
+        "codeName": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "enum": ["ecu", "sensor", "actuator", "relay", "body", "fusebox"] },
+        "pinCount": { "type": "number" },
+        "rows": { "type": "number" },
+        "cols": { "type": "number" },
+        "shape": { "type": "string", "enum": ["grid", "double_row", "single_row", "circular"] },
+        "socketColor": { "type": "string", "maxLength": 50 },
+        "socketColorHex": { "type": "string", "maxLength": 30 },
+        "frontImageUrl": { "type": "string", "maxLength": 500 },
+        "backImageUrl": { "type": "string", "maxLength": 500 },
+        "pinoutDiagramUrl": { "type": "string", "maxLength": 500 },
+        "source": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "updatedBy": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "category", "pinCount", "status"]
+    },
+    "ConnectorPin": {
+      "title": "ConnectorPin",
+      "description": "Single terminal pin inside a connector",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "connectorId": { "type": "string" },
+        "pinNumber": { "type": "string", "maxLength": 20 },
+        "row": { "type": "number" },
+        "col": { "type": "number" },
+        "wireColor": { "type": "string", "maxLength": 100 },
+        "wireHex": { "type": "string", "maxLength": 30 },
+        "wireStripeHex": { "type": "string", "maxLength": 30 },
+        "functionName": { "type": "string", "maxLength": 200 },
+        "signalType": { "type": "string", "enum": ["12V_BAT", "12V_IGN", "5V_REF", "GROUND", "ANALOG_IN", "ANALOG_OUT", "PWM_PULSE", "CAN_BUS", "K_LINE", "DISCONNECTED"] },
+        "voltageRange": { "type": "string", "maxLength": 50 },
+        "testGuide": { "type": "string", "maxLength": 2000 },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "source": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "connectorId", "pinNumber", "functionName", "signalType", "status"]
+    },
+    "FuseBox": {
+      "title": "FuseBox",
+      "description": "Automotive fuse box unit",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 150 },
+        "location": { "type": "string", "enum": ["cabin", "engine", "battery", "trunk"] },
+        "locationFa": { "type": "string", "maxLength": 100 },
+        "realImageUrl": { "type": "string", "maxLength": 500 },
+        "coverDiagramUrl": { "type": "string", "maxLength": 500 },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "source": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "vehicleId", "name", "location", "status"]
+    },
+    "Fuse": {
+      "title": "Fuse",
+      "description": "Individual fuse with amperage, circuit, and hotspot coordinates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fuseBoxId": { "type": "string" },
+        "code": { "type": "string", "maxLength": 30 },
+        "ratingAmps": { "type": "number" },
+        "functionName": { "type": "string", "maxLength": 200 },
+        "circuitDetails": { "type": "string", "maxLength": 1000 },
+        "powerSupplyType": { "type": "string", "maxLength": 50 },
+        "xPercent": { "type": "number" },
+        "yPercent": { "type": "number" },
+        "testTips": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "fuseBoxId", "code", "ratingAmps", "functionName", "status"]
+    },
+    "Relay": {
+      "title": "Relay",
+      "description": "Relay with pinouts and diagnostic data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fuseBoxId": { "type": "string" },
+        "code": { "type": "string", "maxLength": 30 },
+        "name": { "type": "string", "maxLength": 100 },
+        "rating": { "type": "string", "maxLength": 50 },
+        "coilPins": { "type": "string", "maxLength": 100 },
+        "contactPins": { "type": "string", "maxLength": 100 },
+        "functionName": { "type": "string", "maxLength": 200 },
+        "diagnostics": { "type": "string", "maxLength": 1000 },
+        "xPercent": { "type": "number" },
+        "yPercent": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "fuseBoxId", "code", "name", "functionName", "status"]
+    },
+    "WiringDiagram": {
+      "title": "WiringDiagram",
+      "description": "Wiring schematic diagram",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "enum": ["injection_ignition", "cooling_fan", "lighting", "starter_charging", "abs_esp", "multiplex", "sensor"] },
+        "categoryFa": { "type": "string", "maxLength": 100 },
+        "diagramImageUrl": { "type": "string", "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "source": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["draft", "pending", "verified", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "vehicleId", "title", "category", "status"]
+    },
+    "Media": {
+      "title": "Media",
+      "description": "Uploaded image file metadata linked to an entity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "fileUrl": { "type": "string", "maxLength": 1000 },
+        "storagePath": { "type": "string", "maxLength": 500 },
+        "mimeType": { "type": "string", "maxLength": 50 },
+        "fileSize": { "type": "number" },
+        "entityType": { "type": "string", "enum": ["vehicle", "connector", "fusebox", "pin", "diagram"] },
+        "entityId": { "type": "string" },
+        "imageType": { "type": "string", "enum": ["socket_front", "socket_back", "pinout_diagram", "fusebox_cover", "fusebox_board", "schematic", "sensor_location", "other"] },
+        "uploadedBy": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "fileUrl", "entityType", "entityId"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "User bookmarked item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "itemType": { "type": "string", "enum": ["connector", "fusebox", "vehicle", "diagram"] },
+        "itemId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "subtitle": { "type": "string", "maxLength": 150 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "itemType", "itemId"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Role record authorizing administrative operations",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["super_admin", "technician_editor"] },
+        "grantedAt": { "type": "string" },
+        "grantedBy": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "LicenseRequest": {
+      "title": "LicenseRequest",
+      "description": "Client activation request binding a unique hardware device key",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestToken": { "type": "string", "maxLength": 64 },
+        "deviceId": { "type": "string", "maxLength": 128 },
+        "devicePublicKey": { "type": "string", "maxLength": 512 },
+        "requestedAt": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "fulfilled"] },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string", "maxLength": 150 },
+        "notes": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["id", "requestToken", "deviceId", "devicePublicKey", "requestedAt", "status"]
+    },
+    "License": {
+      "title": "License",
+      "description": "Cryptographically verified software license bound to an Android device",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "activationKey": { "type": "string", "maxLength": 64 },
+        "userId": { "type": "string" },
+        "boundDeviceId": { "type": "string", "maxLength": 128 },
+        "issuedAt": { "type": "string" },
+        "startsAt": { "type": "string" },
+        "expiresAt": { "type": "string" },
+        "duration": { "type": "string", "enum": ["1m", "3m", "6m", "1y", "lifetime"] },
+        "status": { "type": "string", "enum": ["active", "expired", "revoked", "suspended"] },
+        "lastOnlineCheckAt": { "type": "string" },
+        "isBlocked": { "type": "boolean" },
+        "blockReason": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["id", "activationKey", "boundDeviceId", "issuedAt", "startsAt", "expiresAt", "duration", "status", "isBlocked"]
+    },
+    "Device": {
+      "title": "Device",
+      "description": "Hardware Keystore cryptographic identity record for anti-cloning",
+      "type": "object",
+      "properties": {
+        "deviceId": { "type": "string", "maxLength": 128 },
+        "devicePublicKey": { "type": "string", "maxLength": 512 },
+        "firstBoundAt": { "type": "string" },
+        "licenseId": { "type": "string" },
+        "status": { "type": "string", "enum": ["trusted", "blacklisted", "pending"] },
+        "deviceModel": { "type": "string", "maxLength": 100 },
+        "lastIp": { "type": "string", "maxLength": 60 }
+      },
+      "required": ["deviceId", "devicePublicKey", "firstBoundAt", "status"]
+    },
+    "LicenseAuditLog": {
+      "title": "LicenseAuditLog",
+      "description": "Tamper-proof audit trail for license issuance, activation, transfers, and revocations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string", "enum": ["issue", "activate", "renew", "revoke", "transfer", "verify", "block"] },
+        "adminId": { "type": "string" },
+        "userId": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "details": { "type": "string", "maxLength": 1000 },
+        "targetId": { "type": "string" }
+      },
+      "required": ["id", "action", "timestamp", "details"]
+    }
+  },
+  "firestore": {
+    "/manufacturers/{manufacturerId}": {
+      "schema": "Manufacturer",
+      "description": "Vehicle manufacturers"
+    },
+    "/vehicles/{vehicleId}": {
+      "schema": "Vehicle",
+      "description": "Automotive vehicle models"
+    },
+    "/engines/{engineId}": {
+      "schema": "Engine",
+      "description": "Engine specifications"
+    },
+    "/ecus/{ecuId}": {
+      "schema": "ECU",
+      "description": "ECU types and hardware/software versions"
+    },
+    "/connectors/{connectorId}": {
+      "schema": "Connector",
+      "description": "Connectors and pinout diagrams"
+    },
+    "/connectorPins/{pinId}": {
+      "schema": "ConnectorPin",
+      "description": "Pinout terminal specifications and test guides"
+    },
+    "/fuseBoxes/{fuseBoxId}": {
+      "schema": "FuseBox",
+      "description": "Cabin and engine fuse boxes"
+    },
+    "/fuses/{fuseId}": {
+      "schema": "Fuse",
+      "description": "Fuse ratings and interactive coordinates"
+    },
+    "/relays/{relayId}": {
+      "schema": "Relay",
+      "description": "Relay specifications and terminal pins"
+    },
+    "/wiringDiagrams/{diagramId}": {
+      "schema": "WiringDiagram",
+      "description": "Electrical wiring schematics"
+    },
+    "/media/{mediaId}": {
+      "schema": "Media",
+      "description": "Uploaded automotive images and diagrams"
+    },
+    "/favorites/{favoriteId}": {
+      "schema": "Favorite",
+      "description": "User favorites collection"
+    },
+    "/admins/{adminUid}": {
+      "schema": "Admin",
+      "description": "Privileged administrator documents"
+    },
+    "/licenseRequests/{requestId}": {
+      "schema": "LicenseRequest",
+      "description": "Hardware device license requests"
+    },
+    "/licenses/{licenseId}": {
+      "schema": "License",
+      "description": "Issued software licenses bound to hardware"
+    },
+    "/devices/{deviceId}": {
+      "schema": "Device",
+      "description": "Registered devices with Keystore public keys"
+    },
+    "/licenseAuditLogs/{logId}": {
+      "schema": "LicenseAuditLog",
+      "description": "Security audit logs for license lifecycle"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "AutoPin Pro",
+  "description": "بانک اطلاعات تخصصی برق خودرو، پیناوت سوکت ECU و سنسورها، جعبه‌فیوز و نقشه‌های سیم‌کشی خودرو",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

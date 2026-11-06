@@ -1,0 +1,215 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getAdminDoc() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Authoritative Single Source of Truth: Document MUST exist in /admins and have active == true.
+    // Stale Custom Claims alone CANNOT bypass an absent or deactivated database document.
+    function isDatabaseAdmin() {
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+             getAdminDoc().data.active == true;
+    }
+
+    function isAdmin() {
+      return isDatabaseAdmin();
+    }
+
+    function isSuperAdmin() {
+      return isDatabaseAdmin() && getAdminDoc().data.role == 'super_admin';
+    }
+
+    function isOperationalAdmin() {
+      return isDatabaseAdmin() && (getAdminDoc().data.role == 'super_admin' || getAdminDoc().data.role == 'admin');
+    }
+
+    function isPubliclyReadable() {
+      return resource.data.status == 'published' || resource.data.status == 'verified';
+    }
+
+    // Manufacturers
+    match /manufacturers/{manufacturerId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(manufacturerId);
+    }
+
+    // Vehicles
+    match /vehicles/{vehicleId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(vehicleId);
+    }
+
+    // Engines
+    match /engines/{engineId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(engineId);
+    }
+
+    // ECUs
+    match /ecus/{ecuId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(ecuId);
+    }
+
+    // Connectors
+    match /connectors/{connectorId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(connectorId);
+    }
+
+    // Connector Pins
+    match /connectorPins/{pinId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(pinId);
+    }
+
+    // FuseBoxes
+    match /fuseBoxes/{fuseBoxId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(fuseBoxId);
+    }
+
+    // Fuses
+    match /fuses/{fuseId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(fuseId);
+    }
+
+    // Relays
+    match /relays/{relayId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(relayId);
+    }
+
+    // Wiring Diagrams
+    match /wiringDiagrams/{diagramId} {
+      allow get, list: if isPubliclyReadable() || isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(diagramId);
+    }
+
+    // Media & Photos
+    match /media/{mediaId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin() && isValidId(mediaId);
+    }
+
+    // Favorites
+    match /favorites/{favoriteId} {
+      allow get, list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(favoriteId) && incoming().userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if (isSignedIn() && request.auth.uid == userId && incoming().role == existing().role) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Internal In-App Notifications
+    match /notifications/{notificationId} {
+      allow get, list: if isSignedIn() && (
+        resource.data.target == 'all' ||
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isAdmin() || (isSignedIn() && incoming().target == 'admins');
+      allow update: if isAdmin() || (isSignedIn() && (resource.data.userId == request.auth.uid || resource.data.target == 'all'));
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Audit Logs (Strict Admin-only access, append-only and immutable)
+    match /audit_logs/{logId} {
+      allow get, list: if isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if false; // IMMUTABLE: cannot be altered or removed via client SDK
+    }
+
+    // Admin authorization documents (Managed strictly by Cloud Functions Admin SDK)
+    match /admins/{adminUid} {
+      allow get: if isSignedIn() && request.auth.uid == adminUid;
+      allow list: if isAdmin();
+      allow write: if false; // Zero client write access; managed strictly via Server
+    }
+
+    // System Configuration (e.g. one-time bootstrap lock, read-only for super_admin, zero client write)
+    match /system_config/{configId} {
+      allow read: if isSuperAdmin();
+      allow write: if false; // Zero client write access; server managed only
+    }
+
+    // Rate limits (Internal server protection against brute force)
+    match /rateLimits/{limitId} {
+      allow read, write: if false;
+    }
+
+    // License Requests (Users submit their device public key, Admin reviews or Cloud Function fulfills)
+    match /licenseRequests/{requestId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidId(requestId) &&
+        incoming().userId == request.auth.uid &&
+        incoming().status == 'pending' &&
+        incoming().deviceId is string && incoming().deviceId.size() <= 128 &&
+        incoming().devicePublicKey is string && incoming().devicePublicKey.size() <= 512;
+      allow update, delete: if isOperationalAdmin();
+    }
+
+    // Licenses (Strict Server-Authoritative: Mutations ONLY via Cloud Functions Admin SDK)
+    match /licenses/{licenseId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if false; // Zero client write access; mutations strictly via Cloud Functions
+    }
+
+    // Devices (Hardware Public Key Bindings: Managed exclusively by Cloud Functions Admin SDK)
+    match /devices/{deviceId} {
+      allow get: if isSignedIn() && (
+        isAdmin() ||
+        (resource.data.licenseId != null &&
+         exists(/databases/$(database)/documents/licenses/$(resource.data.licenseId)) &&
+         get(/databases/$(database)/documents/licenses/$(resource.data.licenseId)).data.userId == request.auth.uid)
+      );
+      allow list: if isAdmin();
+      allow write: if false; // Zero client write access; managed strictly via Cloud Functions
+    }
+
+    // License Audit Logs (Strict Admin-only Read, Zero Client Write)
+    match /licenseAuditLogs/{logId} {
+      allow get, list: if isAdmin();
+      allow write: if false; // Append-only strictly via Admin SDK in Cloud Functions
+    }
+
+    // Single-use device cryptographic challenges (Zero client read/write, server-only)
+    match /deviceChallenges/{challengeId} {
+      allow read, write: if false;
+    }
+  }
+}

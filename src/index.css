@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    direction: rtl;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: #09090b;
+    color: #f4f4f5;
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Custom scrollbar for automotive workshop theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+/* =========================================================
+   1. FONT SCALE CUSTOMIZATION
+   ========================================================= */
+html.font-scale-sm {
+  font-size: 13.5px;
+}
+html.font-scale-md {
+  font-size: 15px;
+}
+html.font-scale-lg {
+  font-size: 17px;
+}
+html.font-scale-xl {
+  font-size: 19px;
+}
+
+/* =========================================================
+   2. DENSITY & SPACING CUSTOMIZATION
+   ========================================================= */
+html.density-compact .density-card-p {
+  padding: 0.65rem !important;
+}
+html.density-compact .density-gap {
+  gap: 0.5rem !important;
+}
+html.density-compact .density-py {
+  padding-top: 0.35rem !important;
+  padding-bottom: 0.35rem !important;
+}
+
+html.density-normal .density-card-p {
+  padding: 1rem !important;
+}
+html.density-normal .density-gap {
+  gap: 0.75rem !important;
+}
+html.density-normal .density-py {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+html.density-comfortable .density-card-p {
+  padding: 1.35rem !important;
+}
+html.density-comfortable .density-gap {
+  gap: 1.15rem !important;
+}
+html.density-comfortable .density-py {
+  padding-top: 0.85rem !important;
+  padding-bottom: 0.85rem !important;
+}
+
+/* =========================================================
+   3. TABLE ROW HEIGHT & FONT CUSTOMIZATION
+   ========================================================= */
+html.table-font-sm .tabular-cell-text {
+  font-size: 0.72rem !important;
+}
+html.table-font-md .tabular-cell-text {
+  font-size: 0.82rem !important;
+}
+html.table-font-lg .tabular-cell-text {
+  font-size: 0.95rem !important;
+}
+
+html.table-row-compact .tabular-row-py {
+  padding-top: 0.35rem !important;
+  padding-bottom: 0.35rem !important;
+  min-height: 2.2rem !important;
+}
+html.table-row-normal .tabular-row-py {
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+  min-height: 3rem !important;
+}
+html.table-row-relaxed .tabular-row-py {
+  padding-top: 1.15rem !important;
+  padding-bottom: 1.15rem !important;
+  min-height: 3.75rem !important;
+}
+
+/* =========================================================
+   4. LIGHT MODE THEME OVERRIDES
+   ========================================================= */
+html.theme-light {
+  color-scheme: light;
+}
+
+html.theme-light body {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html.theme-light .bg-zinc-950 {
+  background-color: #f8fafc !important;
+}
+
+html.theme-light .bg-zinc-950\/90,
+html.theme-light .bg-zinc-950\/95 {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+}
+
+html.theme-light .bg-zinc-900 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+}
+
+html.theme-light .bg-zinc-900\/90,
+html.theme-light .bg-zinc-900\/80,
+html.theme-light .bg-zinc-900\/70 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html.theme-light .bg-zinc-850,
+html.theme-light .bg-zinc-800 {
+  background-color: #f1f5f9 !important;
+}
+
+html.theme-light .hover\:bg-zinc-800:hover,
+html.theme-light .hover\:bg-zinc-850:hover {
+  background-color: #e2e8f0 !important;
+}
+
+html.theme-light .hover\:bg-zinc-700:hover {
+  background-color: #cbd5e1 !important;
+}
+
+html.theme-light .border-zinc-800,
+html.theme-light .border-zinc-800\/80,
+html.theme-light .border-zinc-800\/60,
+html.theme-light .border-zinc-700 {
+  border-color: #e2e8f0 !important;
+}
+
+html.theme-light .divide-zinc-800,
+html.theme-light .divide-zinc-800\/60 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Light Mode Typography */
+html.theme-light .text-white {
+  color: #0f172a !important;
+}
+
+html.theme-light .text-zinc-100 {
+  color: #1e293b !important;
+}
+
+html.theme-light .text-zinc-200 {
+  color: #334155 !important;
+}
+
+html.theme-light .text-zinc-300 {
+  color: #475569 !important;
+}
+
+html.theme-light .text-zinc-400 {
+  color: #64748b !important;
+}
+
+html.theme-light .text-zinc-500 {
+  color: #94a3b8 !important;
+}
+
+/* Inputs & Form Controls in Light Mode */
+html.theme-light input[type="text"],
+html.theme-light input[type="password"],
+html.theme-light input[type="search"],
+html.theme-light textarea,
+html.theme-light select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.theme-light input::placeholder,
+html.theme-light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Light Scrollbar */
+html.theme-light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+html.theme-light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+html.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* Tabular nums for pinout tables, fuse ratings, voltages */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Safe area padding utilities for mobile */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.pt-safe {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
+/* Security Protection: Disables iOS/Android callout, dragging, and selection */
+*, *::before, *::after {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+input, textarea {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+img, svg, canvas {
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Print Masking: If printed or exported to PDF, hides all application content */
+@media print {
+  html, body, #root, * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
